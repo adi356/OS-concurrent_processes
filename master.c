@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <config.h>
 
+//comment to check git repository working
 int main(int argc, char* argv[]) {
-    
+
 }
