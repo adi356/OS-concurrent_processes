@@ -10,7 +10,7 @@
 #include <sys/types.h>
 #include <config.h>
 
-//comment to check git repository working
+//trying to figure out why repository not updating
 int main(int argc, char* argv[]) {
 
 }
