@@ -6,11 +6,11 @@ The goal of this project is to beecome familiar with concurrent processing in Li
 ### Task
 Generate twenty processes using a master program, called **master**, and make them write into a file called **cstest** in their current working directory. Needless to say that all processes will use the same working directory. Each child process will be executed by an executable called **slave**. The message to be written into the file is: 
 
-<div align="center"> `HH:MM:SS File modified by process number xx` </div>
+` HH:MM:SS File modified by process number xx `
 
 where HH:MM:SS is the current system time, xx is the logical process number as specified by **master**. The value of xx is between 1 and 20. This implies that the child process will be run by the command:
 
-<div align="center"> `slave xx` </div>
+`slave xx`
 
 The critical resource is the file **cstest** which should be updated by a child under exclusive control access. This implies that each **slave** will have a criticial section that will control access to the file to write into it.
 
