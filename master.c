@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <math.h>
 #include "config.h"
 
 //shared data struct - not sure if this is correct implementation
@@ -36,7 +37,12 @@ void terminationFunc(int signo) {
     //third expression might need to be changed to ++i instead of i++ (?)
     for (int i = 0; i < MAX_PROCESSES; i++) {
         if (sharedData[i].inCritical) {
-            FILE* logFile = fopen(strcat(LOG_FILE_PREFIX, itoa(i + 1)), "a");
+            //itoa not working properly, commenting out and using sprintf instead 
+            //FILE* logFile = fopen(strcat(LOG_FILE_PREFIX, itoa(i + 1)), "a");
+            char fileName[100];
+            sprintf(fileName, "%s%d", LOG_FILE_PREFIX, i + 1);
+            FILE* logFile = fopen(fileName, "a");
+
             time_t rawTime;
             time(&rawTime);
             fprintf(logFile, "Termination time: %s", ctime(&rawTime));
@@ -83,6 +89,21 @@ int main(int argc, char* argv[]) {
         sharedData[i].inCritical = 0;
     }
 
-    //TODO: create the multiple child processes using fork
-
+    //create the multiple child processes using fork
+    for (int i = 0; i < numProcesses; ++i) {
+        pid_t pid = fork();
+        if (pid == 0) {
+           //execlp("./slave", "slave", itoa(i + 1), NULL);
+           char processNumberStr[10];
+           sprintf(processNumberStr, "%d", i + 1);
+           execlp("./slave", "slave", processNumberStr, NULL);
+           //need to be more descriptive
+           perror("execlp");
+           exit(EXIT_FAILURE); 
+        } else if (pid < 0) {
+           //need to describe perror better
+           perror("fork");
+           exit(EXIT_FAILURE); 
+        }
+    }
 }
