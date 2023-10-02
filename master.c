@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 
     //initialize shared memory data for each process
     for (int i = 0; i < numProcesses; ++i) {
-        sharedData[i].turn = i;
+        sharedData[i].turn = 0;
         sharedData[i].inCritical = 0;
     }
 
