@@ -1,4 +1,4 @@
-cc = gcc
+CC = gcc
 CFLAGS = -std=gnu99
 TARGETS = master slave
 OBJS = master.o slave.o 
