@@ -25,7 +25,7 @@ void critical_section(int processNumber, FILE* logFile) {
     strftime(message, sizeof(message), "%H:%M:%S", localtime(&t));
     fprintf(logFile, "%s Process %d entered critical section. \n", message, processNumber);
 
-    //write message to cstest
+    //write to cstest and append
     FILE* cstest = fopen("cstest", "a");
     fprintf(cstest, "%s File modified by process number %d\n", message, processNumber);
     fclose(cstest);
@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
     fclose(logFile);
 
     //Detach from shared memory
-    shmdt (sharedData);
+    shmdt(sharedData);
 
     return 0;
 }

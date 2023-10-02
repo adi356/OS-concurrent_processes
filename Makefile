@@ -1,9 +1,14 @@
 cc = gcc
 CFLAGS = -std=gnu99
-TARGET = master
+TARGETS = master slave
 OBJS = master.o slave.o 
-$(TARGET): $(OBJS)
-	$(CC) -o $(TARGET) $(OBJS)
+
+all: $(TARGETS)
+
+master: master.o 
+	$(CC) -o master master.o 
+slave: slave.o 
+	$(CC) -o slave slave.o
 master.o: master.c config.h
 	$(CC) $(CFLAGS) -c master.c 
 slave.o: slave.c config.h
@@ -11,4 +16,4 @@ slave.o: slave.c config.h
 clean:
 	/bin/rm -f *.o 
 clean_all:
-	/bin/rm -f *.o $(TARGET)
+	/bin/rm -f *.o $(TARGETS)

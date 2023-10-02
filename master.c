@@ -30,18 +30,20 @@ struct SharedData {
 };
 
 struct SharedData* sharedData;
+int shmid;
 
 void terminationFunc(int signo) {
     printf("Received termination signal. Cleaning up processes\n");
 
     //deallocate shared memory
     shmdt(sharedData);
-    shmctl(shmget(ftok("shared_memory_key", 1), sizeof(struct SharedData) * MAX_PROCESSES, IPC_CREAT | 0666), IPC_RMID, NULL);
+    shmctl(shmid, IPC_RMID, NULL);
+    //shmctl(shmget(ftok("shared_memory_key", 1), sizeof(struct SharedData) * MAX_PROCESSES, IPC_CREAT | 0666), IPC_RMID, NULL);
     
     //print termination time
     time_t t;
     time(&t);
-    printf("Terminated at: %s", ctime(&t));
+    printf("Terminated at: %s\n", ctime(&t));
 
     exit(EXIT_SUCCESS);
 }
@@ -52,12 +54,25 @@ int main(int argc, char* argv[]) {
     signal(SIGTERM, terminationFunc);
     signal(SIGINT, terminationFunc);
 
-    int timeout = (argc > 2) ? atoi(argv[2]) : DEFAULT_TIMEOUT;
-    int numProcesses = (argc > 3) ? atoi(argv[3]) : MAX_PROCESSES;
+    //check command line input
+    if (argc < 4) {
+        fprintf(stderr, "Usage: %s -t ss n\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    //timeout try to different ways
+    //way 1
+    // int timeout = (argc > 2) ? atoi(argv[2]) : DEFAULT_TIMEOUT;
+    // int numProcesses = (argc > 3) ? atoi(argv[3]) : MAX_PROCESSES;
+    // numProcesses = (numProcesses > MAX_PROCESSES) ? MAX_PROCESSES : numProcesses;
+    //way 2
+    int timeout = atoi(argv[2]);
+    int numProcesses = atoi(argv[3]);
     numProcesses = (numProcesses > MAX_PROCESSES) ? MAX_PROCESSES : numProcesses;
 
+    //alocate shared memory and initialize
     key_t key = ftok("shared_memory_key", 1);
-    int shmid = shmget(key, sizeof(struct SharedData) * MAX_PROCESSES, IPC_CREAT | 0666);
+    shmid = shmget(key, sizeof(struct SharedData) * MAX_PROCESSES, IPC_CREAT | 0666);
     sharedData = (struct SharedData*)shmat(shmid, NULL, 0);
 
     //initialize shared memory data for each process
@@ -86,6 +101,7 @@ int main(int argc, char* argv[]) {
     //terminate child processes
     for (int i = 0; i < numProcesses; ++i) {
         kill(0, SIGTERM);
+        usleep(5000); //delay between signals to each child process
     }
 
     //wait for child processes to terminate
@@ -94,12 +110,13 @@ int main(int argc, char* argv[]) {
 
     //deallocate shared memory
     shmdt(sharedData);
-    shmctl(shmget(key, sizeof(struct SharedData) * MAX_PROCESSES, IPC_CREAT | 0666), IPC_RMID, NULL);
+    //shmctl(shmget(key, sizeof(struct SharedData) * MAX_PROCESSES, IPC_CREAT | 0666), IPC_RMID, NULL);
+    shmctl(shmid, IPC_RMID, NULL);
 
     //print time
     time_t t;
     time(&t);
-    printf("Terminated at: %s", ctime(&t));
+    printf("Terminated at: %s\n", ctime(&t));
 
     return 0;
 }
