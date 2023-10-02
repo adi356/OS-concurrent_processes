@@ -81,15 +81,19 @@ int main(int argc, char* argv[]) {
         sharedData[i].inCritical = 0;
     }
 
+    //added to see if pid[i] would work better than pid_t
+    pid_t pid[MAX_PROCESSES];
+
     //create the multiple child processes using fork
     for (int i = 0; i < numProcesses; ++i) {
-        pid_t pid = fork();
-        if (pid == 0) {
+        //pid_t pid = fork();
+        pid[i] = fork();
+        if (pid[i] == 0) {
            execlp("./slave", "slave", argv[1], NULL);
            //TODO: write more descriptive error
            perror("execlp");
            exit(EXIT_FAILURE);
-        } else if (pid < 0) {
+        } else if (pid[i] < 0) {
             //TODO: write more descriptive error
             perror("fork");
             exit(EXIT_FAILURE);
@@ -98,9 +102,11 @@ int main(int argc, char* argv[]) {
 
     sleep(timeout);
 
+    //added to test new method for this loop
+    
     //terminate child processes
     for (int i = 0; i < numProcesses; ++i) {
-        kill(0, SIGTERM);
+        kill(pid[i], SIGTERM);
         usleep(5000); //delay between signals to each child process
     }
 
