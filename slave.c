@@ -41,10 +41,10 @@ void exit_section (int processNumber, FILE* logFile) {
     sharedData[processNumber - 1].inCritical = 0;
 }
 
-void random_sleep() {
-    //sleep for random amount of time between 1 and 3 seconds
-    sleep(rand() % 3 + 1);
-}
+// void random_sleep() {
+//     //sleep for random amount of time between 1 and 3 seconds
+//     sleep(rand() % 3 + 1);
+// }
 
 int main(int argc, char* argv[]) {
     int processNumber = atoi(argv[1]);
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     int shmid = shmget(key, sizeof(struct SharedData) * MAX_PROCESSES, 0666);
     sharedData = (struct SharedData*)shmat(shmid, NULL, 0);
 
-    //logFile logic
+    //open logFile
     char logFileName[20];
     snprintf(logFileName, sizeof(logFileName), "logfile.%d", processNumber);
     FILE* logFile = fopen(logFileName, "w");
@@ -64,10 +64,11 @@ int main(int argc, char* argv[]) {
 
     //loop for critical section
     for (int i = 0; i < 5; ++i) {
+        
         entry_section(processNumber, logFile);
-        random_sleep();
+        sleep(rand() % 3 + 1);
         critical_section(processNumber, logFile);
-        random_sleep();
+        sleep(rand() % 3 + 1);
         exit_section(processNumber, logFile);
         //remainder_section();
     }
