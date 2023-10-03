@@ -3,7 +3,7 @@
 ## To Run
 1. Clean up any files left from last time program was run, do this by typing "make clean" and then "make clean_all".
 2. Create the executables by typing in "make".
-3. Run the program using this command: "./master -t ss n" where ss is number of seconds (default is 100) and n is number of processes (max is 20).
+3. Run the program using this command: "./master ss n" where ss is number of seconds (default is 100) and n is number of processes (max is 20). NOTE: do not run using -t flag, program won't work using it for some reason
 
 ### Purpose
 The goal of this project is to beecome familiar with concurrent processing in Linux using shared memory. You will use multiple concurrent processes to write into a file at random times, solving the concurrency issues using the multiple concurrent processes algorithm (algorithm 4 in notes) to synchronize processes. Your job is to create the environment such that two processes cannot write into the file simultaneously and yet, every process gets its turn to write into the file.
