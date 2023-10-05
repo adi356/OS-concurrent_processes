@@ -111,12 +111,14 @@ int main(int argc, char* argv[]) {
     //added to test new method for this loop
     
     //terminate child processes
+    //should have been inside termination function along with kill operation below
     for (int i = 0; i < numProcesses; ++i) {
         kill(0, SIGTERM);
         //usleep(5000); //delay between signals to each child process
     }
 
     //wait for child processes to terminate
+    //this should be above the for loop killing child processes and also inside termination function
     int status;
     while (wait(&status) > 0);
 

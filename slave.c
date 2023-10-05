@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
     snprintf(logFileName, sizeof(logFileName), "logfile.%d", processNumber);
     FILE* logFile = fopen(logFileName, "w");
     if (logFile == NULL) {
+        //should use printf here instead of perror
         perror("SLAVE ERROR: Problem opening log file");
         exit(EXIT_FAILURE);
     }
