@@ -1,4 +1,4 @@
-# 4760-concurrent_processes
+# OS-concurrent_processes
 
 ## To Run
 1. Clean up any files left from last time program was run, do this by typing "make clean" and then "make clean_all".
